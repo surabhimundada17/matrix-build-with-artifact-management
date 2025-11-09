@@ -1,0 +1,48 @@
+name: Multi-Platform Matrix Build 5974424
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on Node ${{ matrix.node }} / OS ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [14, 16, 18]
+        # This creates 9 parallel jobs (3 OS × 3 Node versions)
+        exclude:
+          - os: windows-latest
+            node: 14
+          - os: macos-latest
+            node: 16
+          - os: ubuntu-latest
+            node: 18
+        # So at least 3 jobs remain and run successfully
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: matrix-5974424
+        run: echo "Running matrix build for OS=${{ matrix.os }}, Node=${{ matrix.node }}"
+
+      - name: Generate build artifact
+        run: |
+          echo "Build output for OS=${{ matrix.os }}, Node=${{ matrix.node }}" > output.txt
+          echo "Timestamp: $(date)" >> output.txt
+          echo "Build successful!" >> output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-5974424-${{ matrix.os }}-v${{ matrix.node }}
+          path: output.txt

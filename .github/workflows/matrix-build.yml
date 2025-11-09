@@ -12,16 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [14, 16, 18]
-        # This creates 9 parallel jobs (3 OS × 3 Node versions)
-        exclude:
-          - os: windows-latest
-            node: 14
-          - os: macos-latest
-            node: 16
-          - os: ubuntu-latest
-            node: 18
-        # So at least 3 jobs remain and run successfully
+        node: [18, 20, 22]   # Supported versions
 
     steps:
       - name: Checkout
